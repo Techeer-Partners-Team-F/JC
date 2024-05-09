@@ -10,6 +10,7 @@ public class ArticleForm {
     private Long id;
     private String title;
     private String content;
+    private Integer count;
 
 //    AllargsConstructor;
 //    public ArticleForm(String title, String content) {
@@ -27,6 +28,6 @@ public class ArticleForm {
 //    }
 
     public Article toEntity() {
-        return new Article(id, title, content);
+        return new Article(id, title, content, count);
     }
 }

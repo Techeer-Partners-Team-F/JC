@@ -7,19 +7,19 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @Slf4j
 @Controller
 public class ArticleController {
+
+
     @Autowired
     private ArticleRepository articleRepository;
 
@@ -47,6 +47,7 @@ public class ArticleController {
         log.info("id="+id);
         Optional<Article> articleEntity = articleRepository.findById(id);
         model.addAttribute("article", articleEntity.orElse(null));
+
         return "articles/show";
     }
 
@@ -85,5 +86,14 @@ public class ArticleController {
             rttr.addFlashAttribute("msg", "Delect Complete!");
         }
         return "redirect:/articles";
+    }
+
+    @PostMapping("/articles/{id}/like")
+    public String like(@PathVariable Long id, RedirectAttributes rttr) {
+        articleRepository.findById(id).ifPresent(article -> {
+            article.setLikeCount(article.getLikeCount() + 1);
+            articleRepository.save(article);
+        });
+        return "redirect:/articles/{id}";
     }
 }

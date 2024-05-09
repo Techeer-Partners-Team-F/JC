@@ -20,6 +20,8 @@ public class Article {
     private String title;
     @Column
     private String content;
+    @Column
+    private Integer count;
 
     public void patch(Article article) {
         if (article.title != null)
@@ -28,6 +30,13 @@ public class Article {
         this.content = article.content;
     }
 
+    public int getLikeCount() {
+        return count;
+    }
+
+    public void setLikeCount(Integer count) {
+        this.count = count;
+    }
 
 //    @Entity
 //    public Article(Long id, String title, String content) {
