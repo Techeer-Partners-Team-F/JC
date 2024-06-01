@@ -2,8 +2,9 @@ package com.example.first.project.api;
 
 import com.example.first.project.dto.ArticleForm;
 import com.example.first.project.entity.Article;
-import com.example.first.project.repository.ArticleRepository;
 import com.example.first.project.service.ArticleService;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,32 +13,42 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+
 @Slf4j
 @RestController
+@Tag(name = "Board")
 public class ArticleApiController {
 
     @Autowired
     private ArticleService articleService;
 
-    @GetMapping("/api/articles")
+    @Operation(summary = "Read all articles")
+    //@ApiResponse(responseCode = "200", description = "List of URLs retrieved successfully")
+    @GetMapping("/swagger-ui/index.html/v1/api/articles")
     public List<Article> index() {
         return articleService.index();
     }
 
-    @GetMapping("api/articles/{id}")
+    @Operation(summary = "Read a article by Id")
+    @GetMapping("/swagger-ui/index.html/v1/api/articles/{id}")
     public Article show(@PathVariable Long id) {
         return articleService.show(id);
     }
 
-    @PostMapping("/api/articles")
+    @Operation(summary = "Create Article", description = "input 'title' and 'content' only, Other parameters are completed automatically.")
+    @PostMapping("/swagger-ui/index.html/v1/api/articles")
     public ResponseEntity<Article> create(@RequestBody ArticleForm dto) {
         Article created = articleService.create(dto);
         return (created != null) ?
                 ResponseEntity.status(HttpStatus.OK).body(created) :
                 ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
-
-    @PatchMapping("/api/articles/{id}")
+    @Operation(summary = "Update Article", description = "input Id parameter and requestbody 'title','content'")
+    @PatchMapping("/swagger-ui/index.html/v1/api/articles/{id}")
     public ResponseEntity<Article> update(@PathVariable Long id, @RequestBody ArticleForm dto) {
 
         Article updated = articleService.update(id, dto);
@@ -45,8 +56,8 @@ public class ArticleApiController {
                 ResponseEntity.status(HttpStatus.OK).body(updated) :
                 ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
-
-    @DeleteMapping("api/articles/{id}")
+    @Operation(summary = "Delete Article")
+    @DeleteMapping("/swagger-ui/index.html/v1/api/articles/{id}")
     public ResponseEntity<Article> delete(@PathVariable Long id) {
         Article deleted = articleService.delete(id);
         return (deleted != null) ?
@@ -54,7 +65,8 @@ public class ArticleApiController {
                 ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 
-    @PatchMapping("api/bookmark/{id}")
+    @Operation(summary = "Update bookmark", description = "input true or false to marked only it's boolean type")
+    @PatchMapping("/swagger-ui/index.html/v1/api/bookmark/{id}")
     public ResponseEntity<Article> updatebookmark(@PathVariable Long id, @RequestBody ArticleForm request) {
         boolean marked = request.isMarked();
         Article updatedbookmark = articleService.updateBookmark(id, request);
@@ -63,7 +75,8 @@ public class ArticleApiController {
                 ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 
-    @GetMapping("api/bookmarks")
+    @Operation(summary = "Get All bookmarks")
+    @GetMapping("/swagger-ui/index.html/v1/api/bookmarks")
     public ResponseEntity<List<Article>> getBookmarks() {
         List<Article> bookmarks = articleService.getBookmarks();
         return ResponseEntity.status(HttpStatus.OK).body(bookmarks);
