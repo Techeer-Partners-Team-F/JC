@@ -54,6 +54,21 @@ public class ArticleApiController {
                 ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 
+    @PatchMapping("api/bookmark/{id}")
+    public ResponseEntity<Article> updatebookmark(@PathVariable Long id, @RequestBody ArticleForm request) {
+        boolean marked = request.isMarked();
+        Article updatedbookmark = articleService.updateBookmark(id, request);
+        return (updatedbookmark != null) ?
+                ResponseEntity.status(HttpStatus.OK).body(updatedbookmark) :
+                ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+    }
+
+    @GetMapping("api/bookmarks")
+    public ResponseEntity<List<Article>> getBookmarks() {
+        List<Article> bookmarks = articleService.getBookmarks();
+        return ResponseEntity.status(HttpStatus.OK).body(bookmarks);
+    }
+
 //    @Autowired
 //    private ArticleRepository articleRepository;
 

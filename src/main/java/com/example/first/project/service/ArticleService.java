@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
 @Slf4j
 @Service
 public class ArticleService {
@@ -58,4 +60,18 @@ public class ArticleService {
         articleRepository.delete(target);
         return target;
     }
+
+    public Article updateBookmark(Long id, ArticleForm request) {
+        Article bookmark = articleRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Bookmark not found with id: " + id));
+        boolean marked = request.isMarked();
+        bookmark.setMarked(marked);
+        Article updatedbookmark = articleRepository.save(bookmark);
+        return updatedbookmark;
+    }
+
+    public List<Article> getBookmarks() {
+        List<Article> allArticles = articleRepository.findAll();
+        return allArticles.stream()
+                .filter(Article::isMarked)
+                .collect(Collectors.toList());    }
 }

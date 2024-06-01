@@ -1,16 +1,14 @@
 package com.example.first.project.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 @NoArgsConstructor
 @Entity
 @AllArgsConstructor
 @ToString
 @Getter
+@Setter
 public class Article {
 
     @Id
@@ -22,7 +20,12 @@ public class Article {
     private String content;
     @Column
     private Integer count;
-
+    @Column
+    private boolean liked;
+    @Column
+    private boolean marked;
+    public void setMarked(boolean marked) { this.marked = marked; }
+    public boolean isMarked() { return marked; }
     public void patch(Article article) {
         if (article.title != null)
             this.title = article.title;
@@ -36,6 +39,14 @@ public class Article {
 
     public void setLikeCount(Integer count) {
         this.count = count;
+    }
+
+    public boolean isLiked() {
+        return liked;
+    }
+
+    public void setLiked(boolean liked) {
+        this.liked = liked;
     }
 
 //    @Entity

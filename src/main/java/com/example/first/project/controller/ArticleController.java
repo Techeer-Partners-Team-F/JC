@@ -7,9 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.ArrayList;
@@ -90,10 +88,37 @@ public class ArticleController {
 
     @PostMapping("/articles/{id}/like")
     public String like(@PathVariable Long id, RedirectAttributes rttr) {
-        articleRepository.findById(id).ifPresent(article -> {
-            article.setLikeCount(article.getLikeCount() + 1);
+        Optional<Article> articleEntity = articleRepository.findById(id);
+        articleEntity.ifPresent(article -> {
+            if (!article.isLiked()) {
+                article.setLikeCount(article.getLikeCount() + 1);
+                article.setLiked(true);
+            } else {
+                article.setLikeCount(article.getLikeCount() - 1);
+                article.setLiked(false);
+            }
             articleRepository.save(article);
         });
         return "redirect:/articles/{id}";
     }
+
+//    @PatchMapping("/bookmark/{id}")
+//    public ResponseEntity<Void> redirectUrl(@PathVariable String hash) {
+//        Url url = service.findByHash(hash);
+//        if (url.isActive()) {
+//            return ResponseEntity.status(302).location(URI.create(url.getOriginurl())).build();
+//        } else {
+//            return ResponseEntity.notFound().build();
+//        }
+//    }
+
+//    @PostMapping("/articles/{id}/like")
+//    public String like(@PathVariable Long id, RedirectAttributes rttr) {
+//        articleRepository.findById(id).ifPresent(article -> {
+//            article.setLikeCount(article.getLikeCount() + 1);
+//            articleRepository.save(article);
+//        });
+//        return "redirect:/articles/{id}";
+//    }
+
 }
